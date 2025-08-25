@@ -4,6 +4,7 @@ import 'package:campus_navigation_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:campus_navigation_app/screens/splash_screen.dart';
 import 'package:campus_navigation_app/screens/dashboard_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
+        textTheme: GoogleFonts.poppinsTextTheme(),
       ),
       home: const SplashScreen(),
       routes: {
