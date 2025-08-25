@@ -1,4 +1,9 @@
+import 'package:campus_navigation_app/nav_bar.dart';
+import 'package:campus_navigation_app/screens/login_screen.dart';
+import 'package:campus_navigation_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:campus_navigation_app/screens/splash_screen.dart';
+import 'package:campus_navigation_app/screens/dashboard_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,6 +14,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Campus Navigator',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const SplashScreen(),
+      routes: {
+        '/dashboard': (context) => const DashboardScreen(),
+        '/login' : (context) => const LoginScreen(),
+        '/signup' : (context) => const SignupScreen(),
+      },
+    );
   }
 }

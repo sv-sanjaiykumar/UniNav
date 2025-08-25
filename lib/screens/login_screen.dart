@@ -1,0 +1,151 @@
+import 'package:flutter/material.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  final String defaultUsername = "admin";
+  final String defaultPassword = "1234";
+
+  String? _errorMessage;
+  bool _obscurePassword = true;
+
+  void _login() {
+    if (_usernameController.text == defaultUsername &&
+        _passwordController.text == defaultPassword) {
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } else {
+      setState(() {
+        _errorMessage = "Invalid username or password";
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.navigation_rounded,
+                  size: size.width * 0.25,
+                  color: Colors.blueAccent,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "Campus Navigator",
+                  style: TextStyle(
+                    fontSize: size.width * 0.08,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                const SizedBox(height: 40),
+
+                // Username
+                TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    labelText: "Username",
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Password
+                TextField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    prefixIcon: const Icon(Icons.lock),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                if (_errorMessage != null)
+                  Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                const SizedBox(height: 20),
+
+                // Login Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: size.width * 0.25,
+                      vertical: size.height * 0.02,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  onPressed: _login,
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                      fontSize: size.width * 0.05,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Redirect to Signup
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/signup');
+                  },
+                  child: Text(
+                    "Don’t have an account? Sign up",
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: size.width * 0.04,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
