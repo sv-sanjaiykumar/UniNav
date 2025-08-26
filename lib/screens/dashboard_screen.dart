@@ -1,3 +1,4 @@
+import 'package:campus_navigation_app/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -28,6 +29,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
           style: const TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle, color: Colors.white, size: 28),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: _buildDashboard(size),
     );
@@ -61,14 +73,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
             children: [
-              _buildQuickCard(
-                  Icons.map, "Campus Map", Colors.lightBlue.shade100),
-              _buildQuickCard(
-                  Icons.restaurant, "Cafeteria", Colors.green.shade100),
-              _buildQuickCard(
-                  Icons.book, "Library", Colors.orange.shade100),
-              _buildQuickCard(
-                  Icons.meeting_room, "Classrooms", Colors.purple.shade100),
+              _buildQuickCard(Icons.map, "Campus Map", Colors.lightBlue.shade100),
+              _buildQuickCard(Icons.restaurant, "Cafeteria", Colors.green.shade100),
+              _buildQuickCard(Icons.book, "Library", Colors.orange.shade100),
+              _buildQuickCard(Icons.meeting_room, "Classrooms", Colors.purple.shade100),
             ],
           ),
           const SizedBox(height: 30),
@@ -101,8 +109,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               borderRadius: BorderRadius.circular(16),
             ),
             child: ListTile(
-              leading: const Icon(Icons.sports_basketball,
-                  color: Colors.deepOrange),
+              leading: const Icon(Icons.sports_basketball, color: Colors.deepOrange),
               title: const Text("Sports Meet"),
               subtitle: const Text("Don’t miss the inter-college sports meet."),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
