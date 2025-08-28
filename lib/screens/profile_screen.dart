@@ -22,13 +22,10 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Profile picture
             const CircleAvatar(
-              radius: 60, // add a default image in assets
+              radius: 60,
             ),
             const SizedBox(height: 16),
-
-            // Name
             const Text(
               "John Doe",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -39,8 +36,6 @@ class ProfileScreen extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 20),
-
-            // Info section
             Card(
               elevation: 3,
               shape: RoundedRectangleBorder(
@@ -71,7 +66,6 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
 
             // Edit profile button
@@ -81,8 +75,7 @@ class ProfileScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding:
-                const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
               onPressed: () {
                 Navigator.push(
@@ -93,6 +86,31 @@ class ProfileScreen extends StatelessWidget {
               icon: const Icon(Icons.edit, color: Colors.white),
               label: const Text(
                 "Edit Profile",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Logout button
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+              ),
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  "/login", // Make sure you have a route for login in MaterialApp
+                      (route) => false,
+                );
+              },
+              icon: const Icon(Icons.logout, color: Colors.white),
+              label: const Text(
+                "Logout",
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),

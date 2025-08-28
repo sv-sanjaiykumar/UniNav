@@ -3,7 +3,6 @@ import 'package:campus_navigation_app/screens/login_screen.dart';
 import 'package:campus_navigation_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:campus_navigation_app/screens/splash_screen.dart';
-import 'package:campus_navigation_app/screens/dashboard_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
