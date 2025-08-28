@@ -9,7 +9,11 @@ class MapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Map - $destination"),
+        automaticallyImplyLeading: false,
+        title: Text(
+            "Map - $destination",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
       ),
