@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,21 +12,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final String defaultUsername = "admin";
-  final String defaultPassword = "1234";
-
+  final AuthService _authService = AuthService();
   String? _errorMessage;
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
-  void _login() {
-    if (_usernameController.text == defaultUsername &&
-        _passwordController.text == defaultPassword) {
-      Navigator.pushReplacementNamed(context, '/dashboard');
-    } else {
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+
+    try {
+      final success = await _authService.login(username, password);
+      if (success) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      } else {
+        setState(() {
+          _errorMessage = "Invalid username or password";
+        });
+      }
+    } catch (e) {
       setState(() {
-        _errorMessage = "Invalid username or password";
+        _errorMessage = "Something went wrong. Please try again.";
       });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -57,7 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 40),
 
-                // Username
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
@@ -70,7 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Password
                 TextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
@@ -103,8 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 const SizedBox(height: 20),
 
-                // Login Button
-                ElevatedButton(
+                _isLoading
+                    ? const CircularProgressIndicator(color: Colors.blueAccent)
+                    : ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                     padding: EdgeInsets.symmetric(
@@ -127,7 +144,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 20),
 
-                // Redirect to Signup
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, '/signup');
