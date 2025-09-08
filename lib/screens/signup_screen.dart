@@ -36,7 +36,11 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     try {
-      await AuthService().signUpWithEmail(email, password, username);
+      await AuthService().signup(
+        email: email,
+        password: password,
+        username: username,
+      );
 
       if (mounted) {
         Navigator.pushReplacementNamed(context, "/dashboard");

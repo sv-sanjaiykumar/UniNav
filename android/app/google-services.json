@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12785480038",
+    "project_id": "campus-navigation-app-27865",
+    "storage_bucket": "campus-navigation-app-27865.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12785480038:android:c43a99390a4387eac458a7",
+        "android_client_info": {
+          "package_name": "com.example.campus_navigation_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuGrJULQQuqpl4_uczlfOz6_R-kVoHGdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,7 +9,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   final AuthService _authService = AuthService();
@@ -23,16 +23,20 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     try {
-      final success = await _authService.login(username, password);
-      if (success) {
+      final user = await _authService.login(
+        email: email,
+        password: password,
+      );
+
+      if (user != null) {
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
         setState(() {
-          _errorMessage = "Invalid username or password";
+          _errorMessage = "Invalid email or password";
         });
       }
     } catch (e) {
@@ -76,10 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 40),
 
                 TextField(
-                  controller: _usernameController,
+                  controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: "Username",
-                    prefixIcon: const Icon(Icons.person),
+                    labelText: "Email",
+                    prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
