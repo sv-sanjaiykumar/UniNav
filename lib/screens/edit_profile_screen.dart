@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -9,16 +11,132 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _passwordFormKey = GlobalKey<FormState>();
 
-  // Default values (you can later load these from Firebase or API)
-  final TextEditingController _nameController =
-  TextEditingController(text: "John Doe");
-  final TextEditingController _emailController =
-  TextEditingController(text: "johndoe@university.edu");
-  final TextEditingController _phoneController =
-  TextEditingController(text: "+91 9876543210");
-  final TextEditingController _addressController =
-  TextEditingController(text: "123 Campus Street, City, State");
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+  TextEditingController();
+
+  final User? user = FirebaseAuth.instance.currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    if (user == null) return;
+
+    final snapshot =
+    await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+
+    if (snapshot.exists) {
+      final data = snapshot.data()!;
+      _nameController.text = data['name'] ?? '';
+      _emailController.text = data['email'] ?? user!.email ?? '';
+      _phoneController.text = data['phone'] ?? '';
+      _addressController.text = data['address'] ?? '';
+    } else {
+      _emailController.text = user!.email ?? '';
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    if (!_formKey.currentState!.validate() || user == null) return;
+
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
+        'name': _nameController.text.trim(),
+        'email': _emailController.text.trim(),
+      }, SetOptions(merge: true));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Profile updated successfully!")),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+
+  Future<void> _changePassword() async {
+    if (!_passwordFormKey.currentState!.validate() || user == null) return;
+
+    try {
+      await user!.updatePassword(_newPasswordController.text.trim());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password updated successfully!")),
+      );
+
+      _newPasswordController.clear();
+      _confirmPasswordController.clear();
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Password update failed: $e")),
+      );
+    }
+  }
+
+  void _showChangePasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Change Password"),
+        content: Form(
+          key: _passwordFormKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _newPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "New Password",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) => value!.length < 6
+                    ? "Password must be at least 6 characters"
+                    : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Confirm Password",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                value != _newPasswordController.text ? "Passwords do not match" : null,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: _changePassword,
+            child: const Text("Update"),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,35 +168,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
+                enabled: false,
                 decoration: const InputDecoration(
                   labelText: "Email",
                   prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                value!.isEmpty ? "Please enter your email" : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(
-                  labelText: "Phone",
-                  prefixIcon: Icon(Icons.phone),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                value!.isEmpty ? "Please enter your phone number" : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _addressController,
-                decoration: const InputDecoration(
-                  labelText: "Address",
-                  prefixIcon: Icon(Icons.location_on),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                value!.isEmpty ? "Please enter your address" : null,
               ),
               const SizedBox(height: 24),
               ElevatedButton(
@@ -90,20 +185,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // You can update Firebase or DB here later
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text("Profile updated successfully!")),
-                    );
-                    Navigator.pop(context); // go back to Profile screen
-                  }
-                },
+                onPressed: _saveProfile,
                 child: const Text(
                   "Save Changes",
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.lock),
+                label: const Text("Change Password"),
+                onPressed: _showChangePasswordDialog,
               ),
             ],
           ),

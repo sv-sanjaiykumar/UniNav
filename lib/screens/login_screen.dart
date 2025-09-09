@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_services.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +17,20 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
   bool _obscurePassword = true;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoggedInUser();
+  }
+
+  Future<void> _checkLoggedInUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // User already logged in → skip login
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    }
+  }
 
   Future<void> _login() async {
     setState(() {
@@ -78,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -90,7 +104,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 TextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
@@ -115,14 +128,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 if (_errorMessage != null)
                   Text(
                     _errorMessage!,
                     style: const TextStyle(color: Colors.red),
                   ),
                 const SizedBox(height: 20),
-
                 _isLoading
                     ? const CircularProgressIndicator(color: Colors.blueAccent)
                     : ElevatedButton(
@@ -145,9 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, '/signup');
