@@ -11,22 +11,16 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
 
-  final List<String> _titles = [
-    "Dashboard",
-    "Events",
-    "Profile",
-  ];
+  final List<String> _titles = ["Dashboard", "Events", "Profile"];
 
-  void _safeNavigateToProfile(BuildContext context) {
+  void _safeNavigateToProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      Navigator.push(
+      Navigator.of(
         context,
-        MaterialPageRoute(builder: (context) => const ProfileScreen()),
-      );
+      ).push(MaterialPageRoute(builder: (context) => const ProfileScreen()));
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +36,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.account_circle, color: Colors.white, size: 28),
-            onPressed: () => _safeNavigateToProfile(context),
+            icon: const Icon(
+              Icons.account_circle,
+              color: Colors.white,
+              size: 28,
+            ),
+            onPressed: _safeNavigateToProfile,
           ),
         ],
       ),
@@ -79,10 +77,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
             children: [
-              _buildQuickCard(Icons.map, "Campus Map", Colors.lightBlue.shade100),
-              _buildQuickCard(Icons.restaurant, "Cafeteria", Colors.green.shade100),
+              _buildQuickCard(
+                Icons.map,
+                "Campus Map",
+                Colors.lightBlue.shade100,
+              ),
+              _buildQuickCard(
+                Icons.restaurant,
+                "Cafeteria",
+                Colors.green.shade100,
+              ),
               _buildQuickCard(Icons.book, "Library", Colors.orange.shade100),
-              _buildQuickCard(Icons.meeting_room, "Classrooms", Colors.purple.shade100),
+              _buildQuickCard(
+                Icons.meeting_room,
+                "Classrooms",
+                Colors.purple.shade100,
+              ),
             ],
           ),
           const SizedBox(height: 30),
@@ -115,7 +125,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               borderRadius: BorderRadius.circular(16),
             ),
             child: ListTile(
-              leading: const Icon(Icons.sports_basketball, color: Colors.deepOrange),
+              leading: const Icon(
+                Icons.sports_basketball,
+                color: Colors.deepOrange,
+              ),
               title: const Text("Sports Meet"),
               subtitle: const Text("Don’t miss the inter-college sports meet."),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -144,10 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 10),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ],
         ),
